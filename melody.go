@@ -74,7 +74,6 @@ func New() *Melody {
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
 		CheckOrigin:     func(r *http.Request) bool { return true },
-		Subprotocols:    []string{"xxx"},
 	}
 
 	hub := newHub()
@@ -166,7 +165,7 @@ func (m *Melody) HandleRequestWithKeys(w http.ResponseWriter, r *http.Request, k
 	if m.hub.closed() {
 		return ErrClosed
 	}
-
+	m.Upgrader.Subprotocols = []string{r.Header.Get("Sec-WebSocket-Protocol")}
 	conn, err := m.Upgrader.Upgrade(w, r, w.Header())
 
 	if err != nil {
